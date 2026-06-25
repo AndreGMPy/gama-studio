@@ -1,15 +1,19 @@
 "use client";
 
-import { AnimatePresence, motion } from "motion/react";
-import { useMemo, useState } from "react";
+import { Suspense, useEffect, useMemo, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
+import { AnimatePresence, motion } from "motion/react";
 
 const whatsappNumber = "524451447804";
 
 const whatsappMessage = encodeURIComponent(
   "Hola, vengo del portafolio visual de Gama Studio. Me interesa cotizar un servicio de fotografía."
 );
+
+const instagramUrl =
+  "https://www.instagram.com/gama_studio._?igsh=eDgwcTJhdDh0YWtx";
 
 type Photo = {
   src: string;
@@ -32,12 +36,21 @@ function PhotoFrame({ src, alt, className = "" }: PhotoFrameProps) {
         alt=""
         fill
         aria-hidden="true"
+        quality={25}
+        sizes="20vw"
         className="scale-125 object-cover opacity-45 blur-2xl"
       />
 
       <div className="absolute inset-0 bg-black/10" />
 
-      <Image src={src} alt={alt} fill className="object-contain p-2" />
+      <Image
+        src={src}
+        alt={alt}
+        fill
+        quality={72}
+        sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+        className="object-contain p-2"
+      />
     </div>
   );
 }
@@ -62,6 +75,18 @@ function createPhotos(
   });
 }
 
+function createEventPhoto(photoNumber: number, extension = "jpg"): Photo {
+  const number = String(photoNumber).padStart(2, "0");
+  const fileName = `evento-social-${number}.${extension}`;
+
+  return {
+    src: `/images/evento-social/${fileName}`,
+    fileName,
+    title: `Evento social ${number}`,
+    category: "Evento social",
+  };
+}
+
 const filters = ["Todos", "Casual", "Cumpleaños", "Evento social", "Marketing"];
 
 const casualPhotos = createPhotos("casual", "casual", "Casual", 12);
@@ -83,44 +108,19 @@ const birthdayPhotos: Photo[] = [
 ];
 
 const eventPhotos: Photo[] = [
-  ...createPhotos("evento-social", "evento-social", "Evento social", 4),
-  ...createPhotos("evento-social", "evento-social", "Evento social", 2).map(
-    (photo, index) => {
-      const realNumber = index + 6;
-      const number = String(realNumber).padStart(2, "0");
-      const fileName = `evento-social-${number}.jpg`;
-
-      return {
-        src: `/images/evento-social/${fileName}`,
-        fileName,
-        title: `Evento social ${number}`,
-        category: "Evento social",
-      };
-    }
-  ),
-  ...[8, 9, 10, 12, 13].map((photoNumber) => {
-    const number = String(photoNumber).padStart(2, "0");
-    const fileName = `evento-social-${number}.jpg`;
-
-    return {
-      src: `/images/evento-social/${fileName}`,
-      fileName,
-      title: `Evento social ${number}`,
-      category: "Evento social",
-    };
-  }),
-  {
-    src: "/images/evento-social/evento-social-14.png",
-    fileName: "evento-social-14.png",
-    title: "Evento social 14",
-    category: "Evento social",
-  },
-  {
-    src: "/images/evento-social/evento-social-15.png",
-    fileName: "evento-social-15.png",
-    title: "Evento social 15",
-    category: "Evento social",
-  },
+  createEventPhoto(1),
+  createEventPhoto(2),
+  createEventPhoto(3),
+  createEventPhoto(4),
+  createEventPhoto(6),
+  createEventPhoto(7),
+  createEventPhoto(8),
+  createEventPhoto(9),
+  createEventPhoto(10),
+  createEventPhoto(12),
+  createEventPhoto(13),
+  createEventPhoto(14, "png"),
+  createEventPhoto(15, "png"),
 ];
 
 const marketingPhotos = createPhotos(
@@ -137,9 +137,19 @@ const allPhotos: Photo[] = [
   ...marketingPhotos,
 ];
 
-export default function GalleryPage() {
+function GalleryContent() {
+  const searchParams = useSearchParams();
+  const categoryFromUrl = searchParams.get("categoria");
+  const initialFilter = filters.includes(categoryFromUrl ?? "")
+    ? categoryFromUrl!
+    : "Todos";
+
   const [selectedFilter, setSelectedFilter] = useState("Todos");
   const [selectedPhoto, setSelectedPhoto] = useState<Photo | null>(null);
+
+  useEffect(() => {
+    setSelectedFilter(initialFilter);
+  }, [initialFilter]);
 
   const visiblePhotos = useMemo(() => {
     if (selectedFilter === "Todos") {
@@ -158,22 +168,22 @@ export default function GalleryPage() {
         transition={{ duration: 0.45 }}
         className="sticky top-0 z-50 border-b border-black/10 bg-[#f7f1e8]/90 backdrop-blur-xl"
       >
-        <nav className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-5 sm:py-4">
+        <nav className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-5 sm:py-5">
           <Link href="/" className="flex min-w-0 items-center gap-3">
-            <span className="relative h-10 w-10 shrink-0 overflow-hidden rounded-full bg-white shadow-sm sm:h-11 sm:w-11">
+            <span className="relative h-14 w-14 shrink-0 overflow-hidden rounded-full bg-white shadow-md sm:h-16 sm:w-16">
               <Image
                 src="/images/logo/logo-gama.png"
                 alt="Logo Gama Studio"
                 fill
-                className="object-contain p-1"
+                className="object-cover"
               />
             </span>
 
             <div className="min-w-0">
-              <p className="truncate text-sm font-bold leading-none">
+              <p className="truncate text-base font-bold leading-none sm:text-lg">
                 Gama Studio
               </p>
-              <p className="truncate text-xs text-black/50">
+              <p className="truncate text-xs text-black/50 sm:text-sm">
                 Portafolio visual
               </p>
             </div>
@@ -221,8 +231,7 @@ export default function GalleryPage() {
 
             <p className="mt-5 max-w-2xl text-base leading-7 text-black/65 sm:text-lg sm:leading-8">
               Una muestra de sesiones, eventos sociales, cumpleaños y fotografía
-              para negocios. Este portafolio se irá actualizando con nuevos
-              trabajos.
+              para negocios. Elige una categoría para ver ese tipo de trabajo.
             </p>
           </motion.div>
 
@@ -326,6 +335,62 @@ export default function GalleryPage() {
         </div>
       </section>
 
+      {/* FOOTER */}
+      <footer className="border-t border-white/10 bg-black px-4 py-7 text-center text-white">
+        <p className="text-[10px] uppercase tracking-[0.3em] text-white/30">
+          Designed & developed by
+        </p>
+
+        <div className="mt-3 flex justify-center">
+          <Image
+            src="/images/logo/ingenix-hub.png"
+            alt="Ingenix Hub"
+            width={130}
+            height={45}
+            className="h-auto w-[120px] object-contain opacity-75 sm:w-[130px]"
+          />
+        </div>
+      </footer>
+
+      {/* BOTONES FLOTANTES */}
+      <div className="fixed bottom-5 right-5 z-50 flex flex-col gap-3 sm:bottom-6 sm:right-6">
+        {/* Instagram */}
+        <a
+          href={instagramUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Instagram de Gama Studio"
+          className="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-tr from-[#feda75] via-[#d62976] to-[#4f5bd5] text-white shadow-xl transition hover:scale-110"
+        >
+          <svg
+            viewBox="0 0 24 24"
+            className="h-6 w-6"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
+            <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
+            <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
+          </svg>
+        </a>
+
+        {/* WhatsApp */}
+        <a
+          href={`https://wa.me/${whatsappNumber}?text=${whatsappMessage}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="WhatsApp de Gama Studio"
+          className="flex h-12 w-12 items-center justify-center rounded-full bg-[#25D366] text-white shadow-xl transition hover:scale-110"
+        >
+          <svg viewBox="0 0 32 32" className="h-7 w-7" fill="currentColor">
+            <path d="M16.01 3C8.84 3 3 8.73 3 15.78c0 2.27.61 4.48 1.77 6.42L3 29l6.98-1.8A13.2 13.2 0 0 0 16.01 28C23.17 28 29 22.27 29 15.22 29 8.17 23.17 3 16.01 3Zm0 22.76c-1.92 0-3.8-.5-5.45-1.46l-.39-.23-4.14 1.07 1.1-4-.26-.41a10.42 10.42 0 0 1-1.61-5.55c0-5.78 4.82-10.48 10.75-10.48s10.75 4.7 10.75 10.48-4.82 10.58-10.75 10.58Zm5.9-7.84c-.32-.16-1.9-.92-2.2-1.03-.3-.11-.52-.16-.74.16-.22.32-.85 1.03-1.04 1.24-.19.22-.38.24-.7.08-.32-.16-1.36-.49-2.6-1.56-.96-.84-1.61-1.88-1.8-2.2-.19-.32-.02-.49.14-.65.14-.14.32-.38.48-.57.16-.19.22-.32.32-.54.11-.22.05-.41-.03-.57-.08-.16-.74-1.75-1.01-2.4-.27-.65-.54-.56-.74-.57h-.63c-.22 0-.57.08-.87.41-.3.32-1.14 1.1-1.14 2.67s1.17 3.1 1.33 3.31c.16.22 2.3 3.45 5.57 4.84.78.33 1.39.53 1.87.68.79.25 1.5.21 2.06.13.63-.09 1.9-.76 2.17-1.49.27-.73.27-1.35.19-1.49-.08-.14-.3-.22-.62-.38Z" />
+          </svg>
+        </a>
+      </div>
+
       {/* MODAL */}
       <AnimatePresence>
         {selectedPhoto && (
@@ -378,5 +443,21 @@ export default function GalleryPage() {
         )}
       </AnimatePresence>
     </main>
+  );
+}
+
+export default function GalleryPage() {
+  return (
+    <Suspense
+      fallback={
+        <main className="flex min-h-screen items-center justify-center bg-[#f7f1e8] text-[#1f1f1f]">
+          <p className="text-sm font-semibold text-black/60">
+            Cargando portafolio...
+          </p>
+        </main>
+      }
+    >
+      <GalleryContent />
+    </Suspense>
   );
 }

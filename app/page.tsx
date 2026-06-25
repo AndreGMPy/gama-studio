@@ -66,24 +66,28 @@ const services = [
     description:
       "Retratos profesionales para redes sociales, recuerdos personales o momentos especiales.",
     image: "/images/casual/casual-05.jpg",
+    href: "/galeria?categoria=Casual",
   },
   {
     title: "Fotografía para negocios",
     description:
       "Imágenes cuidadas para marcas, productos, espacios y presencia digital.",
     image: "/images/marketing-producto/marketing-producto-01.jpg",
+    href: "/galeria?categoria=Marketing",
   },
   {
     title: "Bodas",
     description:
       "Cobertura fotográfica para capturar los momentos más importantes de tu evento.",
     image: "/images/evento-social/evento-social-03.jpg",
+    href: "/galeria?categoria=Evento%20social",
   },
   {
     title: "Sesiones de cumpleaños",
     description:
       "Fotografías creativas para celebrar una fecha especial con estilo y personalidad.",
     image: "/images/cumpleanos/cumpleanos-03.jpg",
+    href: "/galeria?categoria=Cumplea%C3%B1os",
   },
 ];
 
@@ -91,26 +95,32 @@ const previewGallery = [
   {
     src: "/images/casual/casual-05.jpg",
     title: "Sesión personal",
+    href: "/galeria?categoria=Casual",
   },
   {
     src: "/images/cumpleanos/cumpleanos-03.jpg",
     title: "Cumpleaños",
+    href: "/galeria?categoria=Cumplea%C3%B1os",
   },
   {
     src: "/images/evento-social/evento-social-03.jpg",
     title: "Boda",
+    href: "/galeria?categoria=Evento%20social",
   },
   {
     src: "/images/marketing-producto/marketing-producto-01.jpg",
     title: "Producto",
+    href: "/galeria?categoria=Marketing",
   },
   {
     src: "/images/casual/casual-10.jpg",
     title: "Retrato",
+    href: "/galeria?categoria=Casual",
   },
   {
     src: "/images/evento-social/evento-social-14.png",
     title: "Evento social",
+    href: "/galeria?categoria=Evento%20social",
   },
 ];
 
@@ -465,21 +475,27 @@ export default function Home() {
                 }}
                 className="group overflow-hidden rounded-[1.7rem] border border-black/10 bg-white shadow-sm transition hover:shadow-xl"
               >
-                <PhotoFrame
-                  src={service.image}
-                  alt={service.title}
-                  className="h-60 rounded-none sm:h-64"
-                />
+                <Link href={service.href} className="block h-full">
+                  <PhotoFrame
+                    src={service.image}
+                    alt={service.title}
+                    className="h-60 rounded-none sm:h-64"
+                  />
 
-                <div className="p-5 sm:p-6">
-                  <h3 className="text-lg font-semibold sm:text-xl">
-                    {service.title}
-                  </h3>
+                  <div className="p-5 sm:p-6">
+                    <h3 className="text-lg font-semibold sm:text-xl">
+                      {service.title}
+                    </h3>
 
-                  <p className="mt-3 text-sm leading-6 text-black/60 sm:mt-4">
-                    {service.description}
-                  </p>
-                </div>
+                    <p className="mt-3 text-sm leading-6 text-black/60 sm:mt-4">
+                      {service.description}
+                    </p>
+
+                    <p className="mt-5 text-sm font-semibold text-[#9b7b4f]">
+                      Ver fotos de esta categoría →
+                    </p>
+                  </div>
+                </Link>
               </motion.article>
             ))}
           </div>
@@ -558,17 +574,19 @@ export default function Home() {
                 }}
                 className="group relative"
               >
-                <PhotoFrame
-                  src={photo.src}
-                  alt={photo.title}
-                  className="aspect-[3/4] rounded-2xl sm:aspect-[4/5]"
-                />
+                <Link href={photo.href} className="block">
+                  <PhotoFrame
+                    src={photo.src}
+                    alt={photo.title}
+                    className="aspect-[3/4] rounded-2xl sm:aspect-[4/5]"
+                  />
 
-                <div className="absolute inset-x-0 bottom-0 rounded-b-2xl bg-gradient-to-t from-black/75 to-transparent p-3 sm:p-4">
-                  <p className="text-xs font-semibold sm:text-sm">
-                    {photo.title}
-                  </p>
-                </div>
+                  <div className="absolute inset-x-0 bottom-0 rounded-b-2xl bg-gradient-to-t from-black/75 to-transparent p-3 sm:p-4">
+                    <p className="text-xs font-semibold sm:text-sm">
+                      {photo.title}
+                    </p>
+                  </div>
+                </Link>
               </motion.div>
             ))}
           </div>
