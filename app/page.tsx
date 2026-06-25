@@ -7,7 +7,7 @@ import { motion } from "motion/react";
 const whatsappNumber = "524451447804";
 
 const whatsappMessage = encodeURIComponent(
-  "Hola, vengo de la página web de Gama Studio. Me interesa cotizar un servicio de fotografía."
+  "Hola, Me interesa cotizar un servicio de fotografía."
 );
 
 const instagramUrl =
@@ -745,6 +745,23 @@ export default function Home() {
           </p>
         </div>
       </section>
+      
+      {/* FOOTER */}
+<footer className="border-t border-white/10 bg-black px-4 py-7 text-center text-white">
+  <p className="text-[10px] uppercase tracking-[0.3em] text-white/30">
+    Designed & developed by
+  </p>
+
+  <div className="mt-3 flex justify-center">
+    <Image
+      src="/images/logo/ingenix-hub.png"
+      alt="Ingenix Hub"
+      width={130}
+      height={45}
+      className="h-auto w-[120px] object-contain opacity-75 sm:w-[130px]"
+    />
+  </div>
+</footer>
 
       {/* BOTONES FLOTANTES */}
       <div className="fixed bottom-5 right-5 z-50 flex flex-col gap-3 sm:bottom-6 sm:right-6">
