@@ -149,6 +149,15 @@ function GalleryContent() {
 
   useEffect(() => {
     setSelectedFilter(initialFilter);
+
+    // Evita que al venir desde una tarjeta de servicios
+    // la galería abra hasta abajo conservando el scroll anterior.
+    window.history.scrollRestoration = "manual";
+    window.scrollTo({
+      top: 0,
+      left: 0,
+      behavior: "instant",
+    });
   }, [initialFilter]);
 
   const visiblePhotos = useMemo(() => {

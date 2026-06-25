@@ -475,7 +475,7 @@ export default function Home() {
                 }}
                 className="group overflow-hidden rounded-[1.7rem] border border-black/10 bg-white shadow-sm transition hover:shadow-xl"
               >
-                <Link href={service.href} className="block h-full">
+                <Link href={service.href} scroll={true} className="block h-full">
                   <PhotoFrame
                     src={service.image}
                     alt={service.title}
