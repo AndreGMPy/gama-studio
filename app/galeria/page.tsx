@@ -1,10 +1,10 @@
 "use client";
 
+import { AnimatePresence, motion } from "motion/react";
 import { Suspense, useEffect, useMemo, useState } from "react";
-import { useSearchParams } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
-import { AnimatePresence, motion } from "motion/react";
+import { useSearchParams } from "next/navigation";
 
 const whatsappNumber = "524451447804";
 
@@ -38,7 +38,7 @@ function PhotoFrame({ src, alt, className = "" }: PhotoFrameProps) {
         aria-hidden="true"
         quality={25}
         sizes="20vw"
-        className="scale-125 object-cover opacity-45 blur-2xl"
+        className="scale-125 object-cover opacity-35 blur-2xl"
       />
 
       <div className="absolute inset-0 bg-black/10" />
@@ -47,7 +47,7 @@ function PhotoFrame({ src, alt, className = "" }: PhotoFrameProps) {
         src={src}
         alt={alt}
         fill
-        quality={72}
+        quality={70}
         sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
         className="object-contain p-2"
       />
@@ -75,18 +75,6 @@ function createPhotos(
   });
 }
 
-function createEventPhoto(photoNumber: number, extension = "jpg"): Photo {
-  const number = String(photoNumber).padStart(2, "0");
-  const fileName = `evento-social-${number}.${extension}`;
-
-  return {
-    src: `/images/evento-social/${fileName}`,
-    fileName,
-    title: `Evento social ${number}`,
-    category: "Evento social",
-  };
-}
-
 const filters = ["Todos", "Casual", "Cumpleaños", "Evento social", "Marketing"];
 
 const casualPhotos = createPhotos("casual", "casual", "Casual", 12);
@@ -108,19 +96,29 @@ const birthdayPhotos: Photo[] = [
 ];
 
 const eventPhotos: Photo[] = [
-  createEventPhoto(1),
-  createEventPhoto(2),
-  createEventPhoto(3),
-  createEventPhoto(4),
-  createEventPhoto(6),
-  createEventPhoto(7),
-  createEventPhoto(8),
-  createEventPhoto(9),
-  createEventPhoto(10),
-  createEventPhoto(12),
-  createEventPhoto(13),
-  createEventPhoto(14, "png"),
-  createEventPhoto(15, "png"),
+  ...[1, 2, 3, 4, 6, 7, 8, 9, 10, 12, 13].map((photoNumber) => {
+    const number = String(photoNumber).padStart(2, "0");
+    const fileName = `evento-social-${number}.jpg`;
+
+    return {
+      src: `/images/evento-social/${fileName}`,
+      fileName,
+      title: `Evento social ${number}`,
+      category: "Evento social",
+    };
+  }),
+  {
+    src: "/images/evento-social/evento-social-14.png",
+    fileName: "evento-social-14.png",
+    title: "Evento social 14",
+    category: "Evento social",
+  },
+  {
+    src: "/images/evento-social/evento-social-15.png",
+    fileName: "evento-social-15.png",
+    title: "Evento social 15",
+    category: "Evento social",
+  },
 ];
 
 const marketingPhotos = createPhotos(
@@ -139,26 +137,20 @@ const allPhotos: Photo[] = [
 
 function GalleryContent() {
   const searchParams = useSearchParams();
-  const categoryFromUrl = searchParams.get("categoria");
-  const initialFilter = filters.includes(categoryFromUrl ?? "")
-    ? categoryFromUrl!
-    : "Todos";
+  const initialCategory = searchParams.get("categoria") || "Todos";
 
-  const [selectedFilter, setSelectedFilter] = useState("Todos");
+  const [selectedFilter, setSelectedFilter] = useState(initialCategory);
   const [selectedPhoto, setSelectedPhoto] = useState<Photo | null>(null);
 
   useEffect(() => {
-    setSelectedFilter(initialFilter);
+    setSelectedFilter(initialCategory);
 
-    // Evita que al venir desde una tarjeta de servicios
-    // la galería abra hasta abajo conservando el scroll anterior.
-    window.history.scrollRestoration = "manual";
     window.scrollTo({
       top: 0,
       left: 0,
       behavior: "instant",
     });
-  }, [initialFilter]);
+  }, [initialCategory]);
 
   const visiblePhotos = useMemo(() => {
     if (selectedFilter === "Todos") {
@@ -240,7 +232,8 @@ function GalleryContent() {
 
             <p className="mt-5 max-w-2xl text-base leading-7 text-black/65 sm:text-lg sm:leading-8">
               Una muestra de sesiones, eventos sociales, cumpleaños y fotografía
-              para negocios. Elige una categoría para ver ese tipo de trabajo.
+              para negocios. Este portafolio se irá actualizando con nuevos
+              trabajos.
             </p>
           </motion.div>
 
@@ -363,7 +356,6 @@ function GalleryContent() {
 
       {/* BOTONES FLOTANTES */}
       <div className="fixed bottom-5 right-5 z-50 flex flex-col gap-3 sm:bottom-6 sm:right-6">
-        {/* Instagram */}
         <a
           href={instagramUrl}
           target="_blank"
@@ -386,7 +378,6 @@ function GalleryContent() {
           </svg>
         </a>
 
-        {/* WhatsApp */}
         <a
           href={`https://wa.me/${whatsappNumber}?text=${whatsappMessage}`}
           target="_blank"
@@ -423,6 +414,8 @@ function GalleryContent() {
                 alt=""
                 fill
                 aria-hidden="true"
+                quality={25}
+                sizes="100vw"
                 className="scale-110 object-cover opacity-35 blur-2xl"
               />
 
@@ -430,6 +423,8 @@ function GalleryContent() {
                 src={selectedPhoto.src}
                 alt={selectedPhoto.title}
                 fill
+                quality={85}
+                sizes="100vw"
                 className="object-contain p-3 sm:p-4"
               />
 
@@ -459,10 +454,12 @@ export default function GalleryPage() {
   return (
     <Suspense
       fallback={
-        <main className="flex min-h-screen items-center justify-center bg-[#f7f1e8] text-[#1f1f1f]">
-          <p className="text-sm font-semibold text-black/60">
-            Cargando portafolio...
-          </p>
+        <main className="min-h-screen bg-[#f7f1e8] text-[#1f1f1f]">
+          <div className="mx-auto flex min-h-screen max-w-7xl items-center justify-center px-4">
+            <p className="text-sm font-semibold text-black/50">
+              Cargando portafolio...
+            </p>
+          </div>
         </main>
       }
     >

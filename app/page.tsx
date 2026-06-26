@@ -44,7 +44,9 @@ function PhotoFrame({
         alt=""
         fill
         aria-hidden="true"
-        className="scale-125 object-cover opacity-45 blur-2xl"
+        quality={25}
+        sizes="20vw"
+        className="scale-125 object-cover opacity-35 blur-2xl"
       />
 
       <div className="absolute inset-0 bg-black/10" />
@@ -54,6 +56,8 @@ function PhotoFrame({
         alt={alt}
         fill
         priority={priority}
+        quality={70}
+        sizes="(max-width: 640px) 90vw, (max-width: 1024px) 50vw, 35vw"
         className="object-contain p-2"
       />
     </div>
@@ -65,60 +69,60 @@ const services = [
     title: "Sesiones personales",
     description:
       "Retratos profesionales para redes sociales, recuerdos personales o momentos especiales.",
-    image: "/images/casual/casual-05.jpg",
+    image: "/images/casual/casual-10.jpg",
     href: "/galeria?categoria=Casual",
   },
   {
     title: "Fotografía para negocios",
     description:
       "Imágenes cuidadas para marcas, productos, espacios y presencia digital.",
-    image: "/images/marketing-producto/marketing-producto-01.jpg",
+    image: "/images/marketing-producto/marketing-producto-04.jpg",
     href: "/galeria?categoria=Marketing",
   },
   {
     title: "Bodas",
     description:
       "Cobertura fotográfica para capturar los momentos más importantes de tu evento.",
-    image: "/images/evento-social/evento-social-03.jpg",
+    image: "/images/evento-social/evento-social-06.jpg",
     href: "/galeria?categoria=Evento%20social",
   },
   {
     title: "Sesiones de cumpleaños",
     description:
       "Fotografías creativas para celebrar una fecha especial con estilo y personalidad.",
-    image: "/images/cumpleanos/cumpleanos-03.jpg",
+    image: "/images/cumpleanos/cumpleanos-02.jpg",
     href: "/galeria?categoria=Cumplea%C3%B1os",
   },
 ];
 
 const previewGallery = [
   {
-    src: "/images/casual/casual-05.jpg",
+    src: "/images/casual/casual-12.jpg",
     title: "Sesión personal",
     href: "/galeria?categoria=Casual",
   },
   {
-    src: "/images/cumpleanos/cumpleanos-03.jpg",
+    src: "/images/cumpleanos/cumpleanos-01.jpg",
     title: "Cumpleaños",
     href: "/galeria?categoria=Cumplea%C3%B1os",
   },
   {
-    src: "/images/evento-social/evento-social-03.jpg",
+    src: "/images/evento-social/evento-social-10.jpg",
     title: "Boda",
     href: "/galeria?categoria=Evento%20social",
   },
   {
-    src: "/images/marketing-producto/marketing-producto-01.jpg",
+    src: "/images/marketing-producto/marketing-producto-10.jpg",
     title: "Producto",
     href: "/galeria?categoria=Marketing",
   },
   {
-    src: "/images/casual/casual-10.jpg",
+    src: "/images/casual/casual-11.jpg",
     title: "Retrato",
     href: "/galeria?categoria=Casual",
   },
   {
-    src: "/images/evento-social/evento-social-14.png",
+    src: "/images/evento-social/evento-social-07.jpg",
     title: "Evento social",
     href: "/galeria?categoria=Evento%20social",
   },
@@ -319,7 +323,7 @@ export default function Home() {
               }}
             >
               <PhotoFrame
-                src="/images/casual/casual-04.jpg"
+                src="/images/casual/casual-07.jpg"
                 alt="Sesión fotográfica de Gama Studio"
                 className="h-56 rounded-[1.5rem] shadow-lg"
               />
@@ -332,7 +336,7 @@ export default function Home() {
               className="relative"
             >
               <PhotoFrame
-                src="/images/cumpleanos/cumpleanos-03.jpg"
+                src="/images/cumpleanos/cumpleanos-01.jpg"
                 alt="Detalle de sesión fotográfica"
                 className="h-56 rounded-[1.5rem] shadow-lg"
               />
