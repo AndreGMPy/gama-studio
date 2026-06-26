@@ -403,8 +403,8 @@ export default function Home() {
                   }}
                 >
                   <PhotoFrame
-                    src="/images/root/root-coming-01.jpg"
-                    alt="Inicio creativo de Gama Studio"
+                    src="/images/yo/yo-01.jpg"
+                    alt="En Llamada"
                     className="h-56 rounded-[1.5rem] sm:h-64 md:h-80"
                   />
                 </motion.div>
@@ -417,8 +417,8 @@ export default function Home() {
                   className="mt-8 sm:mt-10"
                 >
                   <PhotoFrame
-                    src="/images/root/root-coming-02.jpg"
-                    alt="Concepto visual de Gama Studio"
+                    src="/images/yo/yo-04.jpg"
+                    alt="Con La Camara"
                     className="h-56 rounded-[1.5rem] sm:h-64 md:h-80"
                   />
                 </motion.div>
