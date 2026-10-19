@@ -1,0 +1,125 @@
+/* Visor de cámara (intro), cortinillas de obturador y destello. */
+.visor {
+  position: fixed; inset: 0; z-index: 100;
+  height: 100dvh; overflow: hidden;
+  background: #000; color: #F4EFE6;
+  font-family: var(--mono);
+  touch-action: none;
+}
+html:not(.js) .visor, html:not(.js) .destello { display: none; }
+.visor[hidden] { display: none; }
+
+.visor__foto { position: absolute; inset: 0; overflow: hidden; }
+.visor__foto img {
+  width: 100%; height: 100%; object-fit: cover; object-position: 50% 30%;
+  filter: blur(18px); transform: scale(1.06);
+  transition: filter .35s ease-out, transform .35s ease-out;
+}
+.visor.enfocado .visor__foto img { filter: blur(0); transform: scale(1); }
+/* Viñeta del ocular: oscurece bordes para que el HUD siempre se lea. */
+.visor__vineta {
+  position: absolute; inset: 0; pointer-events: none;
+  background:
+    radial-gradient(120% 90% at 50% 45%, transparent 55%, rgb(0 0 0 / .55) 100%),
+    linear-gradient(to bottom, rgb(0 0 0 / .45), transparent 18%, transparent 62%, rgb(0 0 0 / .78));
+}
+
+/* ---------- HUD ---------- */
+.visor__hud { position: absolute; inset: 0; pointer-events: none; font-size: clamp(.68rem, 1.05vw, .8rem); letter-spacing: .08em; text-shadow: 0 1px 2px rgb(0 0 0 / .6); }
+.esquina { position: absolute; width: clamp(28px, 4vw, 52px); aspect-ratio: 1; border: 0 solid rgb(244 239 230 / .85); }
+.esquina--ti { top: clamp(56px, 9vh, 88px); left: clamp(18px, 5vw, 72px); border-top-width: 2px; border-left-width: 2px; }
+.esquina--td { top: clamp(56px, 9vh, 88px); right: clamp(18px, 5vw, 72px); border-top-width: 2px; border-right-width: 2px; }
+.esquina--bi { bottom: clamp(150px, 24vh, 210px); left: clamp(18px, 5vw, 72px); border-bottom-width: 2px; border-left-width: 2px; }
+.esquina--bd { bottom: clamp(150px, 24vh, 210px); right: clamp(18px, 5vw, 72px); border-bottom-width: 2px; border-right-width: 2px; }
+
+.hud { position: absolute; left: clamp(18px, 5vw, 72px); right: clamp(18px, 5vw, 72px); display: flex; align-items: center; gap: clamp(10px, 2.4vw, 32px); }
+.hud--sup { top: clamp(18px, 3.4vh, 32px); justify-content: space-between; }
+.hud--inf { bottom: clamp(112px, 17vh, 150px); justify-content: center; flex-wrap: wrap; row-gap: 6px; }
+.hud__bateria { display: inline-flex; align-items: center; gap: .5em; }
+.bateria { width: 22px; height: 11px; border: 1.5px solid currentColor; border-radius: 2px; position: relative; padding: 1.5px; }
+.bateria::before { content: ''; display: block; height: 100%; background: currentColor; }
+.bateria::after { content: ''; position: absolute; right: -4px; top: 2.5px; width: 2px; height: 4px; background: currentColor; }
+.hud__af { color: var(--champana); }
+
+.exposicion { display: inline-flex; align-items: flex-end; gap: 5px; height: 12px; }
+.exposicion i { width: 1.5px; height: 6px; background: currentColor; opacity: .75; }
+.exposicion i.cero { height: 12px; opacity: 1; }
+
+.nivel { position: absolute; left: 50%; top: 46%; transform: translate(-50%, -50%); display: flex; align-items: center; gap: 10px; opacity: .7; }
+.nivel__linea { width: clamp(40px, 9vw, 120px); height: 1px; background: currentColor; }
+.nivel__centro { width: 8px; height: 8px; border: 1px solid currentColor; transform: rotate(45deg); }
+
+/* Retícula AF: la posición la mueve js/visor.js con translate3d. */
+.af { position: absolute; left: 0; top: 0; width: 0; height: 0; will-change: transform; }
+.af__caja {
+  position: absolute; left: -38px; top: -30px; width: 76px; height: 60px;
+  border: 1.5px solid rgb(244 239 230 / .9);
+  transition: border-color .2s, transform .35s var(--ease-out);
+}
+.af__caja::before, .af__caja::after { content: ''; position: absolute; left: 50%; width: 1px; height: 8px; background: currentColor; }
+.af__caja::before { top: -9px; } .af__caja::after { bottom: -9px; }
+.af__estado { position: absolute; left: -38px; top: 38px; white-space: nowrap; font-size: .72rem; }
+.af__lock { display: none; color: var(--af); }
+.visor.enfocado .af__caja { border-color: var(--af); color: var(--af); transform: scale(.82); }
+.visor.enfocado .af__idle { display: none; }
+.visor.enfocado .af__lock { display: inline; }
+
+/* ---------- Obturador ---------- */
+.visor__control { position: absolute; left: 0; right: 0; bottom: max(22px, env(safe-area-inset-bottom)); display: flex; justify-content: center; }
+.obturador {
+  display: flex; flex-direction: column; align-items: center; gap: 10px;
+  background: none; border: 0; padding: 6px; color: inherit; cursor: pointer;
+  font: 500 .74rem/1 var(--mono); letter-spacing: .22em; text-transform: uppercase;
+  -webkit-tap-highlight-color: transparent; touch-action: manipulation;
+}
+.obturador__aro {
+  width: 74px; height: 74px; border-radius: 50%;
+  display: grid; place-items: center;
+  border: 2px solid rgb(244 239 230 / .9);
+  background: rgb(0 0 0 / .25);
+  transition: border-color .25s, transform .3s var(--ease-out);
+}
+.obturador__boton {
+  width: 56px; height: 56px; border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #E8D3AE, var(--bronce) 55%, #6E5330);
+  box-shadow: inset 0 -3px 6px rgb(0 0 0 / .35), 0 0 0 1px rgb(0 0 0 / .4);
+  transition: transform .18s var(--ease-out);
+}
+.visor.enfocado .obturador__aro { border-color: var(--af); }
+.obturador:active .obturador__boton { transform: scale(.88); }
+.obturador:focus-visible { outline: none; }
+.obturador:focus-visible .obturador__aro { outline: 2px solid var(--champana); outline-offset: 4px; }
+
+.saltar {
+  position: absolute; z-index: 3;
+  bottom: max(70px, calc(env(safe-area-inset-bottom) + 48px)); right: 16px;
+  background: rgb(0 0 0 / .35); color: rgb(244 239 230 / .78);
+  border: 1px solid rgb(244 239 230 / .25); border-radius: 999px;
+  padding: .55em 1.1em; min-height: 36px;
+  font: 400 .72rem/1 var(--mono); letter-spacing: .06em; cursor: pointer;
+}
+.saltar:hover { color: #fff; border-color: rgb(244 239 230 / .6); }
+@media (min-width: 721px) { .saltar { bottom: 28px; right: clamp(18px, 5vw, 72px); } }
+
+/* ---------- Cortinillas y destello ---------- */
+.cortinilla { position: absolute; left: 0; right: 0; height: 50.5%; background: #000; transform: scaleY(0); z-index: 4; }
+.cortinilla--sup { top: 0; transform-origin: top; }
+.cortinilla--inf { bottom: 0; transform-origin: bottom; }
+
+.destello {
+  position: fixed; inset: 0; z-index: 110; pointer-events: none; opacity: 0;
+  background:
+    radial-gradient(60% 60% at 50% 46%, #FFFFFF 0 42%, rgb(255 246 230 / 1) 62%, rgb(246 222 182 / 1) 82%, rgb(214 176 122 / 1) 100%);
+}
+/* Lens flare: anillo y estela bronce que se queda un instante más que el blanco. */
+.destello__flare {
+  position: absolute; inset: -20%;
+  background:
+    radial-gradient(closest-side at 64% 40%, rgb(255 255 255 / .95), transparent 40%),
+    radial-gradient(closest-side at 64% 40%, transparent 62%, rgb(201 154 94 / .55) 66%, transparent 72%),
+    radial-gradient(8% 8% at 38% 62%, rgb(217 193 155 / .7), transparent),
+    radial-gradient(4% 4% at 30% 70%, rgb(201 154 94 / .6), transparent),
+    linear-gradient(100deg, transparent 47%, rgb(255 236 200 / .55) 50%, transparent 53%);
+}
+
+.visor:focus { outline: none; }

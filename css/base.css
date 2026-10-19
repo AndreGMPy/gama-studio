@@ -1,0 +1,127 @@
+/* Gama Studio — base, navegación y Hero revelado.
+   Paleta tomada del logo (papel crema, grafito) y del acabado de los equipos (negro mate, bronce). */
+:root {
+  --negro: #09090B;
+  --grafito: #3D3A36;
+  --papel: #EFE8DD;
+  --papel-hondo: #E2D8C9;
+  --bronce: #A9844F;
+  --champana: #D9C19B;
+  --af: #22C55E;
+  --tinta: #1D1B19;
+
+  --serif: 'Bodoni Moda', 'Didot', 'Bodoni 72', Georgia, serif;
+  --mono: 'IBM Plex Mono', ui-monospace, 'Cascadia Mono', Consolas, monospace;
+
+  --gutter: clamp(16px, 4vw, 56px);
+  --ease-out: cubic-bezier(.22, 1, .36, 1);
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; background: var(--negro); }
+html.intro-activa, html.intro-activa body { overflow: hidden; height: 100%; }
+body {
+  margin: 0;
+  background: var(--papel);
+  color: var(--tinta);
+  font-family: var(--serif);
+  font-optical-sizing: auto;
+  font-size: 1.0625rem;
+  line-height: 1.6;
+  overflow-x: clip;
+}
+img { display: block; max-width: 100%; }
+a { color: inherit; }
+h1, h2, h3 { margin: 0; font-weight: 500; }
+p { margin: 0; }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+:focus-visible { outline: 2px solid var(--bronce); outline-offset: 3px; }
+
+/* ---------- Botones ---------- */
+.boton {
+  display: inline-flex; align-items: center; justify-content: center; gap: .5em;
+  min-height: 48px; padding: .75em 1.4em;
+  border-radius: 999px; border: 1px solid transparent;
+  font: 500 .95rem/1 var(--serif); text-decoration: none; cursor: pointer;
+  transition: background-color .25s, color .25s, border-color .25s, transform .3s var(--ease-out);
+  will-change: transform;
+}
+.boton--oscuro { background: var(--tinta); color: var(--papel); }
+.boton--oscuro:hover { background: var(--bronce); }
+.boton--linea { background: transparent; color: var(--tinta); border-color: color-mix(in srgb, var(--tinta) 25%, transparent); }
+.boton--linea:hover { border-color: var(--tinta); }
+
+/* ---------- Navegación ---------- */
+.nav {
+  position: fixed; inset: 0 0 auto; z-index: 40;
+  display: flex; align-items: center; gap: 1.5rem;
+  padding: 12px var(--gutter);
+  background: color-mix(in srgb, var(--papel) 86%, transparent);
+  backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+  border-bottom: 1px solid color-mix(in srgb, var(--tinta) 8%, transparent);
+  transition: background-color .4s, color .4s, border-color .4s;
+}
+.nav__marca { display: flex; align-items: center; gap: .7rem; text-decoration: none; min-width: 0; }
+.nav__marca img { width: 44px; height: 44px; border-radius: 50%; }
+.nav__marca strong { display: block; font-size: 1.05rem; font-weight: 600; line-height: 1.1; }
+.nav__marca small { display: block; font-size: .8rem; opacity: .6; line-height: 1.2; }
+.nav__links { margin-left: auto; display: flex; gap: 1.6rem; }
+.nav__links a { text-decoration: none; font-size: .95rem; }
+.nav__links a:hover { color: var(--bronce); }
+.nav__cta { min-height: 40px; padding: .6em 1.2em; }
+.nav--oscura { background: color-mix(in srgb, var(--negro) 70%, transparent); color: var(--papel); border-color: rgb(255 255 255 / .06); }
+.nav--oscura .nav__cta { background: var(--papel); color: var(--tinta); }
+@media (max-width: 720px) {
+  .nav__links { display: none; }
+  .nav__cta { margin-left: auto; }
+}
+
+/* ---------- Hero revelado ---------- */
+/* El destello blanco se disipa sobre este papel crema: la foto "se revela" como una copia. */
+.hero {
+  min-height: 100svh;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  align-items: center;
+  gap: clamp(32px, 5vw, 88px);
+  padding: 104px var(--gutter) 56px;
+  max-width: 1440px; margin: 0 auto;
+}
+.hero__texto { order: -1; max-width: 34rem; }
+.hero__logo { width: 96px; height: 96px; border-radius: 50%; margin-bottom: 2rem; box-shadow: 0 1px 0 rgb(255 255 255 / .6), 0 10px 30px -12px rgb(60 45 25 / .35); }
+.hero h1 {
+  font-size: clamp(2.5rem, 5.4vw, 4.75rem);
+  line-height: 1.02; letter-spacing: -0.015em; font-weight: 500;
+  text-wrap: balance;
+}
+.hero__intro { margin-top: 1.4rem; font-size: 1.125rem; line-height: 1.65; max-width: 30em; color: color-mix(in srgb, var(--tinta) 78%, transparent); }
+.hero__zonas { margin-top: 1rem; font-style: italic; color: var(--bronce); }
+.hero__acciones { margin-top: 2rem; display: flex; flex-wrap: wrap; gap: .75rem; }
+
+.hero__copia { margin: 0; justify-self: center; width: min(100%, 460px); }
+.hero__foto {
+  aspect-ratio: 1067 / 1600; overflow: hidden;
+  background: var(--papel-hondo);
+  /* margen blanco de copia fotográfica + sombra de papel montado */
+  border: 12px solid #FBF8F3;
+  box-shadow: 0 30px 60px -30px rgb(40 28 14 / .45), 0 2px 6px rgb(40 28 14 / .12);
+}
+.hero__foto img { width: 100%; height: 100%; object-fit: cover; }
+.hero__pie {
+  display: flex; justify-content: space-between; gap: 1rem;
+  margin-top: .8rem; font: 400 .72rem/1.3 var(--mono); letter-spacing: .04em;
+  color: color-mix(in srgb, var(--tinta) 60%, transparent);
+}
+
+@media (max-width: 860px) {
+  .hero { grid-template-columns: 1fr; padding-top: 88px; gap: 28px; align-items: start; }
+  .hero__texto { order: 0; }
+  .hero__copia { width: min(78%, 360px); }
+  .hero__logo { display: none; }
+  .hero h1 { font-size: clamp(2.1rem, 9.4vw, 3rem); }
+  .hero__intro { font-size: 1rem; }
+  .hero__acciones .boton { flex: 1 1 auto; }
+}
+
+/* Antes del destello, la página espera debajo del visor (sin ocultarse: el primer cuadro sin JS es completo). */
+.js .nav, .js .hero__texto > *, .js .hero__copia { will-change: transform, opacity; }

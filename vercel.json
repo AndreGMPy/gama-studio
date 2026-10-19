@@ -1,0 +1,10 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": null,
+  "installCommand": "echo \"Sitio estatico: sin dependencias\"",
+  "buildCommand": "echo \"Sitio estatico: sin build\"",
+  "outputDirectory": ".",
+  "redirects": [
+    { "source": "/galeria", "destination": "/#portafolio", "permanent": true }
+  ]
+}

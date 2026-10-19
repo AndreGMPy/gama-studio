@@ -1,0 +1,5 @@
+tools/
+.claude/
+README.md
+package.json
+package-lock.json
